@@ -1,9 +1,7 @@
 name: Publish overview to gh-pages
 
+# 手動発火のみ。main への push では公開しない（指示があったときだけ反映する）
 on:
-  push:
-    branches: [main]
-    paths: ['site/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:

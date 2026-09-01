@@ -18,8 +18,13 @@ idle/world/overview.html       生成物
   → このリポジトリの site/index.html へコピーして push
 ```
 
-`main` への push で GitHub Actions が `site/` の中身を `gh-pages` ブランチへ publish し、Pages がそれを配信する（`.github/workflows/pages.yml`）。
-手動で流すなら Actions → Deploy overview to GitHub Pages → Run workflow。
+**公開は自動で走らない。指示があったときだけ流す。**
+`main` に push しただけでは Pages は古いままで、公開のたびに手でワークフローを発火させる。
+
+> Actions → **Publish overview to gh-pages** → Run workflow（`main`）
+
+発火すると `site/` の中身が `gh-pages` ブランチへ force push され、Pages がそれを配信する（`.github/workflows/pages.yml`）。
+つまり `main` は「次に公開する内容の置き場」で、`gh-pages` が「いま公開されている内容」になる。
 
 ## 初回だけ必要な設定（リポジトリ管理者）
 
@@ -28,4 +33,4 @@ Pages サイトの**新規作成だけは Actions の `GITHUB_TOKEN` で行え�
 > Settings → Pages → Build and deployment
 > Source: **Deploy from a branch** ／ Branch: **`gh-pages`** ／ **`/ (root)`** → Save
 
-以降は `main` への push だけで反映される（ワークフローが `gh-pages` を作り直し、Pages がそれを配信する）。
+以降は上の「更新のしかた」どおり、ワークフローを手で発火させたときだけ反映される。
