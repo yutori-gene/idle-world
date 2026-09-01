@@ -20,3 +20,12 @@ idle/world/overview.html       生成物
 
 `main` への push で GitHub Actions が `site/` の中身を `gh-pages` ブランチへ publish し、Pages がそれを配信する（`.github/workflows/pages.yml`）。
 手動で流すなら Actions → Deploy overview to GitHub Pages → Run workflow。
+
+## 初回だけ必要な設定（リポジトリ管理者）
+
+Pages サイトの**新規作成だけは Actions の `GITHUB_TOKEN` で行えない**ので、最初の1回だけ手で有効化する。
+
+> Settings → Pages → Build and deployment
+> Source: **Deploy from a branch** ／ Branch: **`gh-pages`** ／ **`/ (root)`** → Save
+
+以降は `main` への push だけで反映される（ワークフローが `gh-pages` を作り直し、Pages がそれを配信する）。
