@@ -18,5 +18,5 @@ idle/world/overview.html       生成物
   → このリポジトリの site/index.html へコピーして push
 ```
 
-`main` への push で GitHub Actions が Pages へ反映する（`.github/workflows/pages.yml`）。
+`main` への push で GitHub Actions が `site/` の中身を `gh-pages` ブランチへ publish し、Pages がそれを配信する（`.github/workflows/pages.yml`）。
 手動で流すなら Actions → Deploy overview to GitHub Pages → Run workflow。

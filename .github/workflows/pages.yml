@@ -1,33 +1,40 @@
-name: Deploy overview to GitHub Pages
+name: Publish overview to gh-pages
 
 on:
   push:
     branches: [main]
+    paths: ['site/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: gh-pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      # enablement: true で、未設定のリポジトリでも Pages を有効化する
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - id: deployment
-        uses: actions/deploy-pages@v4
+
+      # site/ の中身をそのまま gh-pages ブランチの直下へ置き直す。
+      # Pages の source を gh-pages に固定しておけば、リポジトリ設定を触らずに更新できる。
+      - name: Publish site/ to gh-pages
+        run: |
+          set -eux
+          staged=$(mktemp -d)
+          cp -r site/. "$staged"/
+          touch "$staged/.nojekyll"   # Jekyll を通さず静的ファイルをそのまま配信する
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan gh-pages
+          git rm -rf --cached . > /dev/null
+          find . -maxdepth 1 -mindepth 1 ! -name .git -exec rm -rf {} +
+          cp -r "$staged"/. .
+
+          git add -A
+          git commit -m "site を公開（${GITHUB_SHA::7}）"
+          git push -f origin gh-pages
